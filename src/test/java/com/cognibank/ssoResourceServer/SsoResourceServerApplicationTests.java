@@ -36,13 +36,6 @@ public class SsoResourceServerApplicationTests {
 
 	@Test
 	public void userNameAndPasswordInfo() throws Exception {
-//		this.mockMvc.perform(post("/loginUser").contentType("application/json").content("{\n" +
-//				"  \"userName\" : true\n" +
-//				"}")).andDo(print ()).andExpect(status().isOk());
-
-
-		//User user = new User().withUserName ("Anil").withPassword ("Varma");
-		//this.mockMvc.perform(post("/loginUserDemo").contentType("application/json").content(String.valueOf(user))).andDo(print()).andExpect(status().isOk());
 		this.mockMvc.perform(post("/loginUser").contentType("application/json").content("{\n" +
 				"  \"userName\" : \"Anil\",\n" +
 				"  \"password\" : \"Varma\"\n" +
@@ -52,7 +45,7 @@ public class SsoResourceServerApplicationTests {
 	@Test
 	public void testReceivingEmailOrPhoneFromUI() throws Exception {
 		this.mockMvc.perform(post("/receivingEmailOrPhoneFromUI").contentType("application/json").content("{\n" +
-				"  \"email\" : \"anilvarma@gmail.com\"\n" +
+				"  \"email\" : \"anilvarma123@gmail.com\"\n" +
 				"}")).andDo(print ()).andExpect(status().isOk());
 	}
 }

@@ -2,7 +2,8 @@ package com.cognibank.ssoResourceServer.Controller;
 
 
 import com.cognibank.ssoResourceServer.Model.User;
-import com.cognibank.ssoResourceServer.Model.emailAndPhone;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,9 +19,9 @@ public class MainController {
 
     //Can
     @PostMapping (path = "userManagement" , consumes = "application/json", produces = "application/json")
-    public emailAndPhone sendDataToUserManagement(@RequestBody User user) {
+    public User sendDataToUserManagement(@RequestBody User user) {
         System.out.print("sendDataToUserManagement " + user.getUserName());
-        emailAndPhone mailAndPhone = new emailAndPhone();
+        User mailAndPhone = new User();
         mailAndPhone.setEmail("anilvarma@gmail.com");
         mailAndPhone.setPhone("1408937230498");
         return mailAndPhone;
@@ -32,30 +33,41 @@ public class MainController {
         System.out.print("sendDataToNotification " + emailOrPhone);
     }
 
+
+    //Receive data from UI and forward it to UserManagement team and receive email address and phone number
    @PostMapping(path = "loginUser", consumes = "application/json", produces = "application/json")
-    public emailAndPhone loginUser (@RequestBody User user) {
+    public User loginUser (@RequestBody User user) {
         System.out.println(user.getUserName());
-
         final String uri = "http://localhost:8080/userManagement";
-
        RestTemplate restTemplate = new RestTemplate();
-
-
-       emailAndPhone result =  restTemplate.postForObject(uri,user,emailAndPhone.class);
-
-//       System.out.println(restTemplate.getForObject(uri,String.class));
-//       String result = restTemplate.getForObject(uri,String.class);
-
+       User result =  restTemplate.postForObject(uri,user,User.class);
+       System.out.println(("LoginUser sending to UM " ) + result);
        return result;
     }
 
+    //Pass Email Address and Phone number to the UI team (--Encrypt)
+
+
+
+    //Receive Phone or Email from UI and send it to Notifications team  (---Pending OTP generation, Rabbit MQ)
     @PostMapping(path = "receivingEmailOrPhoneFromUI", consumes = "application/json", produces = "application/json")
     public void receivingEmailOrPhoneFromUI(@RequestBody String emailOrPhone){
         final String uri = "http://localhost:8080/notification";
         RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.postForObject(uri,emailOrPhone,String.class);
-        System.out.println(result);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> request = new HttpEntity<>(emailOrPhone, headers);
+        restTemplate.exchange(uri, HttpMethod.POST, request, new ParameterizedTypeReference<String>() { });
     }
+
+
+    //Get OTP from UI team
+
+    //Validate OTP and generate/send authID to UI
+
+
+    //Store authID in REDIS
+
 
 
 
