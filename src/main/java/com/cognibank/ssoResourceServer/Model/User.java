@@ -1,6 +1,8 @@
 package com.cognibank.ssoResourceServer.Model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     private String userId;
     private String userName;
@@ -12,6 +14,18 @@ public class User {
     public User withUserName (final String userName) {
         setUserName (userName);
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", otpCode='" + otpCode + '\'' +
+                '}';
     }
 
     public User withPassword (final String password) {

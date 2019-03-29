@@ -1,6 +1,5 @@
 package com.cognibank.ssoResourceServer;
 
-import com.cognibank.ssoResourceServer.Model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,4 +47,14 @@ public class SsoResourceServerApplicationTests {
 				"  \"email\" : \"anilvarma123@gmail.com\"\n" +
 				"}")).andDo(print ()).andExpect(status().isOk());
 	}
+
+	@Test
+	public void testingTheRedisServer() throws Exception {
+		this.mockMvc.perform(post("/pingRedis").contentType("application/json").content("{\n" +
+				"  \"userId\" : \"Anil\",\n" +
+				"  \"email\" : \"Varma\"\n" +
+				"}")).andDo(print ()).andExpect(status().isOk());
+	}
+
+
 }
