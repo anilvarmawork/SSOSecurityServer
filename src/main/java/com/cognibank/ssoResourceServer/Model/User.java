@@ -1,10 +1,9 @@
 package com.cognibank.ssoResourceServer.Model;
 
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
-
 import java.io.Serializable;
 
 public class User implements Serializable {
+
 
     private String userId;
     private String userName;
@@ -12,12 +11,7 @@ public class User implements Serializable {
     private String email;
     private String phone;
     private String otpCode;
-
-    public User withUserName (final String userName) {
-        setUserName (userName);
-        return this;
-    }
-
+    private String authID;
 
     @Override
     public String toString() {
@@ -28,12 +22,26 @@ public class User implements Serializable {
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", otpCode='" + otpCode + '\'' +
+                ", authID='" + authID + '\'' +
                 '}';
     }
 
     public User withPassword (final String password) {
         setPassword (password);
         return this;
+    }
+    public User withUserName (final String userName) {
+        setUserName (userName);
+        return this;
+    }
+
+
+    public String getAuthID() {
+        return authID;
+    }
+
+    public void setAuthID(String authID) {
+        this.authID = authID;
     }
 
     public String getUserId() {
