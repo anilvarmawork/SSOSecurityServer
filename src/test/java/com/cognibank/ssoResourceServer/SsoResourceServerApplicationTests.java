@@ -51,8 +51,8 @@ public class SsoResourceServerApplicationTests {
 	@Test
 	public void testingTheRedisServer() throws Exception {
 		this.mockMvc.perform(post("/pingRedis").contentType("application/json").content("{\n" +
-				"  \"userId\" : \"Anil\",\n" +
-				"  \"email\" : \"Varma\"\n" +
+				"  \"userId\" : \"Pooja\",\n" +
+				"  \"phone\" : \"12345678\"\n" +
 				"}")).andDo(print ()).andExpect(status().isOk());
 	}
 

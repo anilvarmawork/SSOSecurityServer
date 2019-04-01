@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Map;
 import java.util.Set;
 
 @Repository
@@ -37,14 +38,26 @@ public class UserRedisRepository {
     }
 
 
-    /*Getting a specific user by user id from table*/
+    /*Getting a specific user by user id */
     public User getUser(String userId){
         return (User) hashOperations.get(KEY,userId);
     }
 
 
+    /*Getting all Users*/
+    public Map<Integer,User> getAllItems(){
+        return hashOperations.entries(KEY);
+    }
 
+    /*delete a user*/
+    public void deleteUser(String userId){
+        hashOperations.delete(KEY,userId);
+    }
 
+    /*update a user*/
+    public void updateUser(User user){
+        addUser(user);
+    }
 
 
 

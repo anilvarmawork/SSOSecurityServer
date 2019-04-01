@@ -1,5 +1,7 @@
 package com.cognibank.ssoResourceServer.Model;
 
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
+
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -15,6 +17,7 @@ public class User implements Serializable {
         setUserName (userName);
         return this;
     }
+
 
     @Override
     public String toString() {

@@ -9,6 +9,8 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @RestController("/")
@@ -29,8 +31,9 @@ public class MainController {
     public User sendDataToUserManagement(@RequestBody User user) {
         System.out.print("sendDataToUserManagement " + user.getUserName());
         User mailAndPhone = new User();
+
         mailAndPhone.setEmail("anilvarma@gmail.com");
-        mailAndPhone.setPhone("1408937230498");
+        mailAndPhone.setPhone("1234");
         return mailAndPhone;
     }
 
@@ -43,7 +46,7 @@ public class MainController {
 
     //Receive data from UI and forward it to UserManagement team and receive email address and phone number and forward email/phone to UI
    @PostMapping(path = "loginUser", consumes = "application/json", produces = "application/json")
-    public User loginUser (@RequestBody User user) {
+    public Map<String, String> loginUser (@RequestBody User user) {
         System.out.println(user.getUserName());
         final String uri = "http://localhost:8080/userManagement";
        RestTemplate restTemplate = new RestTemplate();
@@ -51,8 +54,20 @@ public class MainController {
        System.out.println(("LoginUser sending to UM " ) + userObjFromUserManagement);
 
        // store in redis so can compare once receive from UI team to generate otp
-       //create constructor to just return email and phone
-       return userObjFromUserManagement;
+       storeDataToRedis(userObjFromUserManagement);
+
+       //format email/phone before sending to the UI
+       String emailID = userObjFromUserManagement.getEmail();
+       String phone = userObjFromUserManagement.getPhone();
+
+
+       //Map only the required data that is to be sent to the user
+       Map<String,String> dataToUI = new HashMap<String,String>();
+       dataToUI.put("userID", userObjFromUserManagement.getUserId());
+       dataToUI.put("email", emailID);
+       dataToUI.put("phone", phone);
+
+       return dataToUI;
     }
 
 
@@ -70,16 +85,36 @@ public class MainController {
     //store test for redis
 
     @PostMapping(path = "pingRedis", consumes = "application/json", produces = "application/json")
-    public void storeRedisData(@RequestBody User user){
+    public void storeRedisDataPost(@RequestBody User user){
         System.out.println("not stream " + user.getEmail());
-        userRedisRepository.addUser(user);
-      User user2 = userRedisRepository.getUser(user.getUserId());
-      user2.setPhone("aadasdasd");
-      userRedisRepository.addUser(user2);
-      System.out.println(userRedisRepository.getUser(user2.getUserId()).toString());
+
+        if(userRedisRepository.getUser(user.getUserId())!=null){
+            System.out.println("In update");
+            userRedisRepository.updateUser(user);
+        }else{
+            System.out.println("In Add");
+            userRedisRepository.addUser(user);
+        }
+
+        System.out.println(user.toString());
 
     }
 
+
+    public void storeDataToRedis(User user){
+        System.out.println("not stream " + user.getEmail());
+
+        if(userRedisRepository.getUser(user.getUserId())!=null){
+            System.out.println("In update");
+            userRedisRepository.updateUser(user);
+        }else{
+            System.out.println("In Add");
+            userRedisRepository.addUser(user);
+        }
+
+        System.out.println(user.toString());
+
+    }
 
 
     //Get OTP from UI team
